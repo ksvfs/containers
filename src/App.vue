@@ -80,6 +80,7 @@ onUnmounted(() => {
         class="regenerate"
         :class="{ spinning: isIconSpinning }"
         @click="regenerateInput"
+        @dblclick.prevent
         @animationend="isIconSpinning = false"
       >
         <IconRegenerate />
@@ -138,7 +139,7 @@ onUnmounted(() => {
     </div>
 
     <div class="buttons">
-      <button class="button" @click="movePointer" :disabled="right - left <= 1">
+      <button class="button" @click="movePointer" @dblclick.prevent :disabled="right - left <= 1">
         <IconPlay />
         Следующий шаг
       </button>
@@ -146,6 +147,7 @@ onUnmounted(() => {
       <button
         class="button"
         @click="resetPointers"
+        @dblclick.prevent
         :disabled="left === 0 && right === input.length - 1"
       >
         <IconReset />
