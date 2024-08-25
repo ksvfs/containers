@@ -22,6 +22,8 @@ function calculateArea(input: number[], left: number, right: number): number {
 const initialArea = calculateArea(input.value, left.value, right.value);
 const results = ref({ area: initialArea, maximum: initialArea });
 
+const isIconSpinning = ref(false);
+
 function movePointer(): void {
   if (input.value[left.value] <= input.value[right.value]) {
     left.value++;
@@ -40,6 +42,7 @@ function resetPointers(input: number[]): void {
 }
 
 function regenerateInput(): void {
+  isIconSpinning.value = true;
   input.value = input.value.map(() => Math.floor(Math.random() * 10));
   resetPointers(input.value);
 }
@@ -49,7 +52,14 @@ function regenerateInput(): void {
   <main>
     <div class="input">
       <div>[{{ input.join(", ") }}]</div>
-      <button class="regenerate" @click="regenerateInput"><IconRegenerate /></button>
+      <button
+        class="regenerate"
+        :class="{ spinning: isIconSpinning }"
+        @click="regenerateInput"
+        @animationend="isIconSpinning = false"
+      >
+        <IconRegenerate />
+      </button>
     </div>
 
     <div class="results">
@@ -143,6 +153,21 @@ main {
     width: 1.5rem;
     height: 1.5rem;
   }
+
+  &.spinning {
+    svg {
+      animation: spin 0.3s;
+    }
+
+    @keyframes spin {
+      0% {
+        rotate: 0deg;
+      }
+      100% {
+        rotate: 180deg;
+      }
+    }
+  }
 }
 
 .results {
@@ -170,6 +195,7 @@ main {
 
 .bar {
   background-color: #000000;
+  transition: height 0.3s;
 }
 
 .water {
@@ -177,6 +203,8 @@ main {
   bottom: 0;
   z-index: -1;
   background-color: #0183fd;
+  transition: width 0.1s;
+  transition: height 0.1s;
 }
 
 .pointer {
@@ -189,6 +217,7 @@ main {
   border-left-color: transparent;
   border-right-color: transparent;
   border-bottom-color: #ff0000;
+  transition: left 0.1s;
 }
 
 .buttons {
@@ -207,6 +236,7 @@ main {
   gap: 0.3rem;
   font-weight: 700;
   background-color: transparent;
+  transition: opacity 0.1s;
 
   &:disabled {
     opacity: 0.5;
