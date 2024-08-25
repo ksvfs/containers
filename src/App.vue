@@ -235,8 +235,7 @@ main {
   bottom: 0;
   z-index: -1;
   background-color: #0183fd;
-  transition: width 0.1s;
-  transition: height 0.1s;
+  transition: all 0.1s;
 }
 
 .pointer {
