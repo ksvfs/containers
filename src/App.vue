@@ -38,13 +38,18 @@ function resetPointers(input: number[]): void {
   const defaultArea = (right.value - left.value) * Math.min(input[left.value], input[right.value]);
   results.value = { area: defaultArea, maximum: defaultArea };
 }
+
+function regenerateInput(): void {
+  input.value = input.value.map(() => Math.floor(Math.random() * 10));
+  resetPointers(input.value);
+}
 </script>
 
 <template>
   <main>
     <div class="input">
       <div>[{{ input.join(", ") }}]</div>
-      <button class="regenerate"><IconRegenerate /></button>
+      <button class="regenerate" @click="regenerateInput"><IconRegenerate /></button>
     </div>
 
     <div class="results">
