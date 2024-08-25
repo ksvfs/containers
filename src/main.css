@@ -47,3 +47,15 @@ button {
   color: inherit;
   cursor: pointer;
 }
+
+@media (height <= 450px) {
+  :root {
+    font-size: 3.5dvh;
+  }
+}
+
+@media (width <= 325px) {
+  :root {
+    font-size: 4.5dvw;
+  }
+}

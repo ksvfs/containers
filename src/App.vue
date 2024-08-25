@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 
 import IconPlay from "./icons/IconPlay.vue";
 import IconReset from "./icons/IconReset.vue";
@@ -9,7 +9,16 @@ const input = ref([1, 8, 6, 2, 5, 4, 8, 3, 7]);
 const left = ref(0);
 const right = ref(input.value.length - 1);
 
-const chartDimensions = ref({ width: 450, height: 450 });
+const viewport = ref({
+  width: window.innerWidth,
+  height: window.innerHeight,
+});
+
+const chartDimensions = computed(() => ({
+  width: Math.min(450, viewport.value.width - 50),
+  height: Math.min(450, viewport.value.height / 2.5),
+}));
+
 const barWidth = computed(() => chartDimensions.value.width / 20);
 const barGap = computed(() => barWidth.value * 1.5);
 
@@ -37,8 +46,8 @@ function movePointer(): void {
 function resetPointers(): void {
   left.value = 0;
   right.value = input.value.length - 1;
-  const defaultArea = getCurrentArea();
-  results.value = { area: defaultArea, maximum: defaultArea };
+  const newArea = getCurrentArea();
+  results.value = { area: newArea, maximum: newArea };
 }
 
 function regenerateInput(): void {
@@ -46,6 +55,21 @@ function regenerateInput(): void {
   input.value = input.value.map(() => Math.floor(Math.random() * 10));
   resetPointers();
 }
+
+function resizeChart(): void {
+  viewport.value = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  };
+}
+
+onMounted(() => {
+  window.addEventListener("resize", resizeChart);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", resizeChart);
+});
 </script>
 
 <template>
@@ -146,6 +170,10 @@ main {
   font-family: "Ubuntu Mono", monospace;
   font-weight: 700;
   font-size: 1.5rem;
+
+  @media (width <= 380px) {
+    word-spacing: -0.3rem;
+  }
 }
 
 .regenerate {
@@ -191,6 +219,10 @@ main {
   font-size: 1.3rem;
   line-height: 1.4;
   text-align: center;
+
+  @media (width <= 380px) {
+    font-size: 1rem;
+  }
 }
 
 .bar {
@@ -224,6 +256,10 @@ main {
   padding-inline: 0.5rem;
   display: flex;
   gap: 1rem;
+
+  @media (width <= 360px) {
+    font-size: 0.8rem;
+  }
 }
 
 .button {
