@@ -13,13 +13,13 @@ const chartDimensions = ref({ width: 450, height: 450 });
 const barWidth = computed(() => chartDimensions.value.width / 20);
 const barGap = computed(() => barWidth.value * 1.5);
 
-function calculateArea(input: number[], left: number, right: number): number {
-  const width = right - left;
-  const height = Math.min(input[left], input[right]);
+function getCurrentArea(): number {
+  const width = right.value - left.value;
+  const height = Math.min(input.value[left.value], input.value[right.value]);
   return width * height;
 }
 
-const initialArea = calculateArea(input.value, left.value, right.value);
+const initialArea = getCurrentArea();
 const results = ref({ area: initialArea, maximum: initialArea });
 
 const isIconSpinning = ref(false);
@@ -30,21 +30,21 @@ function movePointer(): void {
   } else {
     right.value--;
   }
-  const newArea = calculateArea(input.value, left.value, right.value);
+  const newArea = getCurrentArea();
   results.value = { area: newArea, maximum: Math.max(results.value.maximum, newArea) };
 }
 
-function resetPointers(input: number[]): void {
+function resetPointers(): void {
   left.value = 0;
-  right.value = input.length - 1;
-  const defaultArea = (right.value - left.value) * Math.min(input[left.value], input[right.value]);
+  right.value = input.value.length - 1;
+  const defaultArea = getCurrentArea();
   results.value = { area: defaultArea, maximum: defaultArea };
 }
 
 function regenerateInput(): void {
   isIconSpinning.value = true;
   input.value = input.value.map(() => Math.floor(Math.random() * 10));
-  resetPointers(input.value);
+  resetPointers();
 }
 </script>
 
@@ -121,7 +121,7 @@ function regenerateInput(): void {
 
       <button
         class="button"
-        @click="resetPointers(input)"
+        @click="resetPointers"
         :disabled="left === 0 && right === input.length - 1"
       >
         <IconReset />
